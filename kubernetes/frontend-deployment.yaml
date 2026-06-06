@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car-showroom-frontend
+  namespace: car-showroom
+  labels:
+    app: car-showroom
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: car-showroom
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: car-showroom
+        tier: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: ${DOCKER_REGISTRY}/car-showroom-frontend:${IMAGE_TAG}
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: car-showroom
+spec:
+  selector:
+    app: car-showroom
+    tier: frontend
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
