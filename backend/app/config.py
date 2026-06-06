@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     API_PREFIX: str = "/api/v1"
 
     DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/car_showroom"
+    SQLITE_URL: str = "sqlite+aiosqlite:///./car_showroom.db"
     REDIS_URL: str = "redis://localhost:6379/0"
     CELERY_BROKER_URL: str = "redis://localhost:6379/1"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/2"
@@ -17,7 +18,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     ALGORITHM: str = "HS256"
-    ENVIRONMENT: str = "production"
+    ENVIRONMENT: str = "development"
     DEBUG: bool = False
     ALLOWED_HOSTS: List[str] = ["*"]
     CORS_ORIGINS: List[str] = [
@@ -47,7 +48,9 @@ class Settings(BaseSettings):
 
     @property
     def database_url_async(self) -> str:
-        return self.DATABASE_URL
+        if self.ENVIRONMENT == "production":
+            return self.DATABASE_URL  # PostgreSQL
+        return self.SQLITE_URL
 
     @property
     def database_url_sync(self) -> str:

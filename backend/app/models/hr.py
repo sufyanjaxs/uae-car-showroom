@@ -1,6 +1,6 @@
 from datetime import datetime, timezone, date
-from sqlalchemy import Column, String, Boolean, Integer, Float, DateTime, Date, Text, ForeignKey, Enum as SAEnum, JSON
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Boolean, Integer, Float, DateTime, Date, Text, ForeignKey, Enum as SAEnum, JSON, UniqueConstraint
+from app.database import UUID
 from sqlalchemy.orm import relationship
 import enum
 
@@ -36,7 +36,7 @@ class Department(BaseModel, TenantMixin):
     description = Column(Text)
     manager_id = Column(UUID(as_uuid=True), ForeignKey("employees.id"))
 
-    employees = relationship("Employee", back_populates="department", lazy="selectin")
+    employees = relationship("Employee", back_populates="department", lazy="selectin", foreign_keys="Employee.department_id")
 
 
 class Employee(BaseModel, TenantMixin, AuditMixin):
@@ -78,7 +78,7 @@ class Employee(BaseModel, TenantMixin, AuditMixin):
     is_active = Column(Boolean, default=True)
     last_login = Column(DateTime(timezone=True))
 
-    department = relationship("Department", back_populates="employees")
+    department = relationship("Department", back_populates="employees", foreign_keys="Employee.department_id")
 
 
 class Attendance(BaseModel):
@@ -91,11 +91,7 @@ class Attendance(BaseModel):
     notes = Column(Text)
 
     __table_args__ = (
-        ForeignKeyConstraint(
-            fields=["employee_id", "date"],
-            refcolumns=["employees.id", "attendance.date"],
-            name="uq_employee_attendance",
-        ),
+        UniqueConstraint("employee_id", "date", name="uq_employee_attendance"),
     )
 
 
@@ -117,11 +113,7 @@ class Payroll(BaseModel, TenantMixin, AuditMixin):
     notes = Column(Text)
 
     __table_args__ = (
-        ForeignKeyConstraint(
-            fields=["employee_id", "period_start", "period_end"],
-            refcolumns=["employees.id", "payroll.period_start", "payroll.period_end"],
-            name="uq_employee_payroll_period",
-        ),
+        UniqueConstraint("employee_id", "period_start", "period_end", name="uq_employee_payroll_period"),
     )
 
 

@@ -12,7 +12,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
 from app.config import settings
-from app.database import init_db, close_db
+from app.database import init_db, close_db, async_session
 from app.api.v1 import router as api_router
 
 logging.basicConfig(
@@ -24,11 +24,30 @@ logger = logging.getLogger(__name__)
 limiter = Limiter(key_func=get_remote_address)
 
 
+async def check_and_seed():
+    try:
+        from sqlalchemy import select, func
+        from app.models import Brand
+        async with async_session() as session:
+            result = await session.execute(select(func.count(Brand.id)))
+            count = result.scalar()
+            if count == 0:
+                logger.info("Empty database, running seed...")
+                from app.seed import init_and_seed
+                await init_and_seed()
+                logger.info("Database seeded successfully")
+            else:
+                logger.info(f"Database already has data ({count} brands), skipping seed")
+    except Exception as e:
+        logger.warning(f"Seed check failed (tables may not exist yet): {e}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info(f"Starting {settings.APP_NAME}")
     await init_db()
     logger.info("Database initialized")
+    await check_and_seed()
     if settings.SENTRY_DSN:
         import sentry_sdk
         sentry_sdk.init(dsn=settings.SENTRY_DSN, environment=settings.ENVIRONMENT)

@@ -1,4 +1,4 @@
-from app.models.core import BaseModel, TenantMixin, AuditMixin
+from app.models.core import BaseModel, TenantMixin, AuditMixin, Branch
 from app.models.inventory import (
     Brand, VehicleModel, VehicleTrim, VehicleColor,
     Vehicle, VehicleImage, VehicleDocument,
@@ -29,7 +29,7 @@ from app.models.marketing import (
 )
 
 __all__ = [
-    "BaseModel", "TenantMixin", "AuditMixin",
+    "BaseModel", "TenantMixin", "AuditMixin", "Branch",
     "Brand", "VehicleModel", "VehicleTrim", "VehicleColor",
     "Vehicle", "VehicleImage", "VehicleDocument",
     "InventoryTransfer", "StockAlert", "VehicleBooking",

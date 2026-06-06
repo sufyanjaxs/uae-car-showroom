@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, String, Boolean, Integer, Float, DateTime, Date, Text, ForeignKey, JSON
-from sqlalchemy.dialects.postgresql import UUID
+from app.database import UUID
 from sqlalchemy.orm import relationship
 
 from app.models.core import BaseModel, TenantMixin, AuditMixin

@@ -31,28 +31,34 @@ export function Sidebar() {
   return (
     <div
       className={cn(
-        "flex flex-col border-r bg-card transition-all duration-300",
+        "relative flex flex-col border-r bg-card transition-all duration-500 ease-in-out overflow-hidden",
         collapsed ? "w-16" : "w-64"
       )}
     >
-      <div className="flex h-14 items-center border-b px-4">
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]">
+        <div className="flex h-full flex-col">
+          <div className="flex-1" />
+          <div className="h-1/2 bg-gradient-to-b from-transparent via-uae-green/30 to-transparent" />
+          <div className="h-1/3 bg-gradient-to-b from-transparent via-uae-red/20 to-transparent" />
+          <div className="h-1/4 bg-gradient-to-b from-transparent via-black/10 to-transparent" />
+        </div>
+      </div>
+      <div className="relative z-10 flex h-14 items-center border-b border-gold-200/30 bg-gradient-to-r from-navy-900 via-navy-800 to-navy-900 px-4">
         {!collapsed && (
-          <div className="flex items-center gap-2">
-            <Car className="h-6 w-6 text-primary" />
-            <span className="font-bold text-primary">UAE Auto</span>
+          <div className="flex items-center gap-2 animate-fade-in">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 shadow-glow">
+              <Car className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-gradient-gold font-bold tracking-wide">UAE Auto</span>
           </div>
         )}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className={cn(
-            "ml-auto rounded-lg p-1.5 hover:bg-accent",
-            collapsed && "mx-auto"
-          )}
-        >
-          <ChevronLeft className={cn("h-4 w-4 transition-transform", collapsed && "rotate-180")} />
-        </button>
+        {collapsed && (
+          <div className="mx-auto flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 shadow-glow">
+            <Car className="h-4 w-4 text-white" />
+          </div>
+        )}
       </div>
-      <nav className="flex-1 space-y-1 p-2">
+      <nav className="relative z-10 flex-1 space-y-0.5 overflow-y-auto p-2 scrollbar-thin">
         {navigation.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -61,30 +67,56 @@ export function Sidebar() {
               key={item.name}
               href={item.href}
               className={cn(
-                "sidebar-link",
+                "sidebar-link group",
                 isActive && "active",
                 collapsed && "justify-center px-2"
               )}
               title={collapsed ? item.name : undefined}
             >
-              <Icon className="h-4 w-4 flex-shrink-0" />
-              {!collapsed && <span>{item.name}</span>}
+              <Icon className={cn(
+                "h-4 w-4 flex-shrink-0 transition-transform duration-300 group-hover:scale-110",
+                isActive ? "text-gold-500" : "text-muted-foreground"
+              )} />
+              {!collapsed && (
+                <span className={cn(
+                  "transition-all duration-300",
+                  isActive ? "font-semibold text-gold-600" : ""
+                )}>
+                  {item.name}
+                </span>
+              )}
+              {isActive && !collapsed && (
+                <span className="ml-auto h-1.5 w-1.5 rounded-full bg-gold-500 shadow-sm shadow-gold-500/50" />
+              )}
             </Link>
           );
         })}
       </nav>
-      <div className="border-t p-4">
+      <div className="relative z-10 border-t border-gold-200/30 p-4">
         {!collapsed && (
-          <div className="flex items-center gap-3 rounded-lg bg-primary/5 p-3">
-            <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
-              <Users className="h-4 w-4 text-primary" />
+          <div className="flex items-center gap-3 rounded-xl bg-gradient-to-br from-gold-500/10 via-gold-500/5 to-transparent p-3 ring-1 ring-gold-500/20 animate-fade-in">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-gold-400 to-gold-600 shadow-glow">
+              <span className="text-sm font-bold text-white">AU</span>
             </div>
-            <div>
-              <p className="text-sm font-medium">Admin User</p>
-              <p className="text-xs text-muted-foreground">CEO</p>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-foreground">Admin User</p>
+              <p className="text-xs text-gold-600/80">CEO</p>
             </div>
           </div>
         )}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className={cn(
+            "flex h-8 w-8 items-center justify-center rounded-lg border border-gold-200/30 text-muted-foreground transition-all duration-300 hover:border-gold-400/50 hover:bg-gold-50 hover:text-gold-600",
+            !collapsed && "ml-auto",
+            collapsed && "mx-auto"
+          )}
+        >
+          <ChevronLeft className={cn(
+            "h-4 w-4 transition-transform duration-500",
+            collapsed && "rotate-180"
+          )} />
+        </button>
       </div>
     </div>
   );

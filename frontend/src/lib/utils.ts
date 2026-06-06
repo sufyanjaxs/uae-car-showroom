@@ -32,10 +32,17 @@ export function getStatusColor(status: string): string {
     in_transit: "bg-amber-100 text-amber-700",
     servicing: "bg-purple-100 text-purple-700",
     active: "bg-green-100 text-green-700",
+    inactive: "bg-gray-100 text-gray-500",
     pending: "bg-amber-100 text-amber-700",
     completed: "bg-green-100 text-green-700",
     cancelled: "bg-red-100 text-red-700",
     draft: "bg-gray-100 text-gray-700",
+    new: "bg-blue-100 text-blue-700",
+    contacted: "bg-amber-100 text-amber-700",
+    negotiation: "bg-purple-100 text-purple-700",
+    closed_won: "bg-green-100 text-green-700",
+    lead: "bg-blue-100 text-blue-700",
+    vip: "bg-gold-100 text-gold-700",
   };
   return colors[status] || "bg-gray-100 text-gray-700";
 }

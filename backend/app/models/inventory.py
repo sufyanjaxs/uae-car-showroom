@@ -5,7 +5,7 @@ from sqlalchemy import (
     Text, ForeignKey, UniqueConstraint, Index, Enum as SAEnum,
     JSON,
 )
-from sqlalchemy.dialects.postgresql import UUID
+from app.database import UUID
 from sqlalchemy.orm import relationship
 import enum
 

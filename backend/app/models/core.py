@@ -1,9 +1,8 @@
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Text
 from sqlalchemy.orm import declared_attr
-from app.database import Base
+from app.database import Base, UUID
 
 
 def utcnow():
@@ -30,6 +29,17 @@ class BaseModel(Base):
 
     def to_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+class Branch(BaseModel):
+    __tablename__ = "branches"
+    name_ar = Column(String(200), nullable=False)
+    name_en = Column(String(200), nullable=False)
+    emirate = Column(String(100), nullable=False)
+    address = Column(Text)
+    phone = Column(String(20))
+    email = Column(String(200))
+    manager_id = Column(UUID(as_uuid=True), ForeignKey("employees.id"), nullable=True)
 
 
 class TenantMixin:
